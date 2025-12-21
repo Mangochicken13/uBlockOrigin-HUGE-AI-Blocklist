@@ -1,4 +1,5 @@
 ! // Twitter AI "artists"/orgs
+! domains=["twitter.com/", "x.com/"]
 twitter.com/ew_corpse
 x.com/ew_corpse
 twitter.com/TimChia83
