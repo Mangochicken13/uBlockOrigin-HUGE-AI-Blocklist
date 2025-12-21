@@ -160,7 +160,6 @@ stockimg.ai
 airbrush.ai
 arthemy.ai
 arthub.ai
-onlyrizz.ai
 gofind.ai
 texta.ai
 novita.ai
