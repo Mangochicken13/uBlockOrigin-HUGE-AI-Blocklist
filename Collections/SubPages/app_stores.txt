@@ -1,0 +1,29 @@
+! // Google Play AI applications
+play.google.com/store/apps/details?id=com.sola.anime.ai.generator
+play.google.com/store/apps/details?id=com.vyroai.animeart
+play.google.com/store/apps/details?id=ai.art.anime
+play.google.com/store/apps/details?id=aiart.generator.aigc
+play.google.com/store/apps/details?id=com.animeart.animeavatar
+play.google.com/store/apps/details?id=com.aesoft.app.lockscreen.patternlocker
+play.google.com/store/apps/details?id=anime.generator.aigc
+play.google.com/store/apps/details?id=com.anime.ai.art.generator.text.to.image.generator.artwork
+play.google.com/store/apps/details?id=com.createaiart.aigenerator.draw.photo
+play.google.com/store/apps/details?id=com.daydreamers.reiai
+play.google.com/store/apps/details?id=com.brianmason101.waifu.maker
+play.google.com/store/apps/details?id=com.flow.animeaiart
+play.google.com/store/apps/details?id=com.nft.creator.nftartmaker.crypto
+play.google.com/store/apps/details?id=com.art.ly.aiart.animeart.photoenhancer
+play.google.com/store/apps/details?id=com.Anime.AI.Art.Generator
+play.google.com/store/apps/details?id=com.supono.dalleaigenerator
+play.google.com/store/apps/details?id=lava.aesthetic.art.anime.wallpapers.com
+play.google.com/store/apps/details?id=anime.wallpapers4k.offline
+play.google.com/store/apps/details?id=com.ai.art.generator.avatar.creator.unique
+play.google.com/store/apps/details?id=ai.art.generator.design
+play.google.com/store/apps/details?id=com.tapuniverse.aiartgenerator
+play.google.com/store/apps/details?id=com.vyroai.animeart
+
+
+! // Apple AI applications
+apple.com/us/app/ai-art-generator-hitpaw/id6444304300
+apple.com/us/app/pixai-ai-anime-art-generator/id6474528911
+
