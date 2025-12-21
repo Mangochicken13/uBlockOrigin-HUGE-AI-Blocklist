@@ -1,0 +1,131 @@
+! //// Block lists of individual users & listings
+
+
+! // Adobe
+adobe.com/products/firefly
+adobe.com/ca/products/firefly
+adobe.com/uk/products/firefly
+
+! // Adobe Stock
+stock.adobe.com/images/abstract-painting-about-anime-girl-with-close-up-view-at-the-face-splash-colour-art-portrait-of-anime-girl-digital-art-style-illustration-painting-generative-ai/569091927
+stock.adobe.com/images/abstract-painting-about-anime-girl-with-close-up-view-at-the-face-splash-colour-art-portrait-of-anime-girl-digital-art-style-illustration-painting-generative-ai/569091986
+
+
+! // Artstation
+! // Artstation doesn't organise images under the creator, so this might be a little fruitless
+! // Users
+artstation.com/tryintogetthere
+artstation.com/artwork/kQZoLA
+
+artstation.com/arnaudalevy
+artstation.com/artwork/KOJ80W
+
+
+! // Behance
+! // Users
+behance.net/oliviosarikas
+behance.net/ai_nevys_creator
+behance.net/jiboncrafts01
+behance.net/annadoma
+behance.net/OskarThiemicke
+behance.net/ivannaart
+behance.net/foxyeaf
+behance.net/olgachalykh
+behance.net/zeeshi
+! // Galleries
+behance.net/gallery/209291699/AI-Generated-Creative-Posts
+behance.net/gallery/208813917/AI-Art-Photography-Portfolio
+behance.net/gallery/209354857/AI-Gen-Visuals
+behance.net/gallery/199345215/Ai-Generated-Creative-Poster-Design-Nazmul-GFX
+behance.net/gallery/206632057/Trendy-Ai-generated-Fashion-Poster-Design-Fabrilife
+behance.net/gallery/190706173/AI-Generated-Images
+behance.net/gallery/190706335/Digital-Art
+behance.net/gallery/210948839/Space-Kitty
+behance.net/gallery/210345701/A-Jewel-in-the-Sky
+
+
+! // Deviantart
+deviantart.com/vyerran
+deviantart.com/alyskan
+deviantart.com/rasooliartworks
+deviantart.com/cyberxyt
+deviantart.com/zerofourai
+deviantart.com/allbeautifulgirl
+deviantart.com/zkreations
+deviantart.com/darkprncsai
+deviantart.com/dendyh7
+deviantart.com/jaredsyn
+deviantart.com/instaai
+deviantart.com/lizzyrascal
+deviantart.com/krzychumen
+deviantart.com/selosai
+deviantart.com/aismart
+
+
+! // Fiverr
+fiverr.com/bleassome
+
+
+! // Freepik
+freepik.com/premium-ai-image
+freepik.com/ai
+freepik.com/free-ai-image
+freepik.com/premium-photo/santa-christmas-snowman-with-christmas-tree-background_34806921
+freepik.com/premium-photo/circus-tent-with-balloons-sweets-blue-background-generative-ai_39088161.htm
+freepik.com/premium-photo/moon-background-with-astronaut-image-ai-generated-art_39726721.htm
+freepik.com/author/maxstudioko
+freepik.com/author/smmstore773
+
+
+! // Getty Wallpapers
+gettywallpapers.com/cute-anime-girl-profile-pictures
+
+
+! // Ko-Fi
+! Users
+ko-fi.com/ainomad
+
+! Posts
+ko-fi.com/s/cfcbe64e46
+ko-fi.com/s/0b1ee02cef
+ko-fi.com/s/12dd0f892e
+ko-fi.com/s/26646f3ac9
+ko-fi.com/s/af9a23d375
+
+
+! // Medium
+medium.com/@inchristiely
+medium.com/@aitubo011
+medium.com/@SLover
+medium.com/@queenskisivuli
+medium.com/mlearning-ai
+medium.com/generative-ai
+
+
+! // Pixels
+pixels.com/featured/beautiful-chinese-dragon-lmzkone-narciso-marlene
+pixels.com/profiles/lm2kone
+
+
+! // Redbubble
+! Accounts
+redbubble.com/people/digitalemporio/shop
+
+! Standalone pins
+redbubble.com/i/pin/Steampunk-female-portrait-Cel-shading-Japan-anime-style-by-DigitalEmporio/152924525.NP9QY
+
+
+! // s.id
+s.id/AIArtGaia
+
+
+! // Tiktok
+tiktok.com/@ku_13js
+
+
+! // Tumblr
+dalle2.tumblr.com
+
+
+! // VoiceMod
+tuna.voicemod.net/sound/1fdc3b37-441c-4a34-ae88-853bbbb947bb
