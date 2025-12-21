@@ -1,0 +1,70 @@
+! //// Going NUCLEAR!!! (sites that have a lot of AI "art"/heavily support AI "art", but also have some authentic artwork)
+123rf.com
+3tdesign.edu.vn
+abposters.com
+alamy.com
+alphacoders.com
+artmajeur.com
+artpal.com
+artstation.com
+creativefabrica.com
+dende.ai
+designbundles.net
+deviantart.com
+displate.com
+downgraf.com
+dreamstime.com
+etsy.com
+europosters.eu
+freepik.com
+freepik.es
+freepixel.com
+gachax.com/anime
+geekysweetie.com
+gettywallpapers.com
+imgchest.com
+inprnt.com
+jungleai.com
+kemono.party
+kemono.su
+lunarmimi.net
+medium.com
+nbcsport.co.uk
+peakpx.com.com
+pinterest.com
+pixabay.com
+pixels.com
+pixtastock.com
+pngtree.com
+posterlounge.com
+redbrokoly.com
+redbubble.com
+rollingpress.co.ke
+shutterstock.com
+stock.adobe.com
+thehungryjpeg.com
+thirstymag.com
+uhdpaper.com
+ukposters.co.uk
+uxdesign.cc
+vanasplus.com
+vecteezy.com
+wallhere.com
+
+! // Content Aggregators/SEO spam
+tnhelearning.edu.vn
+
+! // Things that use Anthropic, Open AI, etc api/backend/models, but its usage is abnormal to that of gAI image or chat models
+talpasearch.com
+
+! // Subreddits
+reddit.com/r/100Kanojo
+reddit.com/r/CatgirlSFW
+reddit.com/r/MildFemboys
+
+! // Pinterest
+pinterest.com
+pinterest.com/Sereneshell
+
+! // Alternate App Stores
+cafebazaar.ir

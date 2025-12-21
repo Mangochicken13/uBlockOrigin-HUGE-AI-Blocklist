@@ -1,0 +1,19 @@
+! // Amazon
+amazon.com/Anime-Coloring-Book-Chibi-Kawaii/dp/B0CZP35QWQ
+amazon.com/Anime-Coloring-Book-Drawing-Enthusiasts/dp/B0C8R9DD5J
+amazon.com/Anime-Coloring-Book-Enthusiasts-Stress/dp/B0C79NPRKT
+amazon.com/Anime-Coloring-Book-Flower-Enthusiasts/dp/B0CCCMZXQG
+amazon.com/Anime-Coloring-Book-Manhua-Enthusiasts/dp/B0CMCKC5GM
+amazon.com/Anime-Coloring-Book-Zodiac-Enthusiasts/dp/B0C91XFRLH
+amazon.com/Cat-Coloring-Book-Cats-Windows/dp/B0CVLFSSGC
+amazon.com/Cat-Coloring-Book-Wearing-Scarves/dp/B0CVTYD34P
+amazon.com/Cute-Anime-Girls-Fantasy-Inspired-Characters/dp/B0C47SW6NT
+amazon.com/Easter-Rabbit-Coloring-Book-Lovers/dp/B0CVVJQP39
+amazon.com/Kawaii-Sketchbook-drawing-notebook-journal/dp/B0C9S8W4PW
+amazon.com/Rabbit-Coloring-Book-Rabbits-Lovers/dp/B0CV43GKGZ
+amazon.com/Sexy-Anime-Coloring-Book-Enthusiasts/dp/B0C8QXCZSD
+amazon.com/Sexy-Anime-Coloring-Book-Enthusiasts/dp/B0CMSDFXKS
+amazon.com/Squirrel-Coloring-Book-Squirrels-Lovers/dp/B0CVHLGJS8
+
+! // Specific Amazon accounts
+amazon.com/stores/Aeryn-Zen/author/B0C7NL912Q
