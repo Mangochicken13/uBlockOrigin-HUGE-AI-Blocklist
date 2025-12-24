@@ -1,15 +1,16 @@
 import argparse as arg
+import __getLineList__
 import io
 import os
 
 parser = arg.ArgumentParser(description="Organise domain names under each header alphabetically")
 
-parser.add_argument("-f", "--file")
+parser.add_argument("file")
 
 args = parser.parse_args()
 
 
-def getLineList(_file: io.TextIOWrapper, headerPrefix="! //", commentPrefix="!") -> [str]:
+def _getLineList(_file: io.TextIOWrapper, headerPrefix="! //", commentPrefix="!") -> [str]:
     headerLines = []
     lines: [str] = []
     sortedLines = []
@@ -71,7 +72,7 @@ def main():
         print(f"Writing to {targetPath}")
 
         while True:
-            lines = getLineList(file)
+            lines = __getLineList__.getSortedLineList(file)
             #print(lines)
             if (len(lines) == 0):
                 break
@@ -96,5 +97,5 @@ def main():
         outputFile.truncate() # remove trailing newlines?
         outputFile.close()
 
-
-main()
+if __name__ == "__main__":
+    main()
