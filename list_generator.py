@@ -1,5 +1,6 @@
 import optparse as opt
 import warnings
+import logging
 import __getLineList__
 from os import walk, path, makedirs, remove
 from os.path import isfile, isdir, join, exists
@@ -87,11 +88,24 @@ def getOpts() -> opt.Values:
 
     return opts
 
-def formatLine(line: str, format: str, engine: str, headerPrefix: str = "! //", commentPrefix = "!") -> str:
-    if line.startswith(headerPrefix) or line.startswith(commentPrefix):
-        return line.replace("{engine}", engine) + '\n'
+def formatLine(_line: str, _format: str, _engine: str, _headerPrefix: str = "! //", _commentPrefix = "!", _commentReplacement = '!') -> str:
+    """
+    Format a line appropriately for the target engine & format
 
-    return format.replace("{url}", line.rstrip()) + '\n'
+    :param str _line: The contents of the line to be formatted
+    :param str _format: The format to place the line contents into. `{url}` in this string is to be replaced with :param str line:
+    :param str _engine: The engine that this line is being created for. Replaces `{engine}` in a string beginning with :param str headerPrefix: or :param str commentPrefix:
+    :param str headerPrefix: The prefix expected for a commented header line
+    :param str commentPrefix: The prefix expected for a commented line
+    :param str commentReplacement: The string to replace the comment prefix with. Use when the engine doesn't use the default comment character `!`
+    
+    :return: The formatted line. Returns :param str _format
+    """
+    _format = _format.rstrip() + "\n" # Normalise the format line ending, add if not present
+    if _line.startswith(_headerPrefix) or _line.startswith(_commentPrefix):
+        return _line.replace("{engine}", _engine).replace(_commentPrefix, _commentReplacement, 1) # replace the comment character for other file types
+    
+    return _format.replace("{url}", _line.rstrip())
 
 def getFiles(_folder: str) -> [str]:
     files = []
@@ -120,6 +134,27 @@ def getFiles_Sorted(_input) -> [str]:
         return sorted(_input, key=str.lower)
 
 
+def compileFiles(_filePaths: [str], _outputFile: str, outputHeader: str, _overwrite: bool = True) -> bool:
+    if exists(_outputFile):
+        if isdir(_outputFile):
+            warnings.warn(f"Targeted path {_outputFile} is a directory, cancelling writing from {_filePaths}")
+            return False
+        if isfile(_outputFile):
+            remove(_outputFile)
+    
+    with open(_outputFile, "x") as outputFile:
+        outputFile.write(outputHeader+'\n')
+        for path in _filePaths:
+            if isfile(path):
+                with open(path, "r") as inputFile:
+                    for line in inputFile:
+                        outputFile.write(line)
+                    
+                    outputFile.write('\n')
+    
+    return True
+    
+
 def main():
     opts = getOpts()
     #print(opts)
@@ -134,7 +169,7 @@ def main():
     print(elementFiles, "\n")
 
     if isfile(opts.outputPath):
-        warnings.warn(f"Output path {opts.outputPath} is a file, not a directiory")
+        warnings.warn(f"Output path {opts.outputPath} is a file, not a directiory. Cancelling compilation")
         return
     elif not exists(opts.outputPath):
         makedirs(opts.outputPath)
@@ -142,9 +177,9 @@ def main():
     if opts.create_ublockorigin:
         # TODO: move this into the arguments
         uBlockFormats = {
-            "google": 'google.com##a[href*="{url}"]:upward(2):remove()',
-            "duckduckgo": 'duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()',
-            "bing": 'bing.com##a[href*="{url}"]:upward(li):remove()',
+            "google": 'google.com##a[href*="{url}"]:upward(2):remove()\n',
+            "duckduckgo": 'duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()\n',
+            "bing": 'bing.com##a[href*="{url}"]:upward(li):remove()\n',
         }
 
         writtenFiles = []
@@ -165,7 +200,7 @@ def main():
                     with open(inputFile, "r") as f:
                         while True:
                             headerLines, lines = __getLineList__.getLineList(f)
-                            if (len(lines) == 0 and len(headerLines) == 0):
+                            if (len(headerLines) == 0 and len(lines) == 0):
                                 file.write('\n')
                                 break
                             
@@ -177,20 +212,31 @@ def main():
         # grab all the written files and add them together
         if opts.compile_ublockorigin:
             targetPath = join(opts.outputPath, "list_uBlockOrigin.txt")
-            if isdir(targetPath):
-                warnings.warn(f"uBlockOrigin compiled path target {targetPath} is a folder, cancelling")
-            elif exists(targetPath) and isfile(targetPath):
+            compileSuccess = compileFiles(writtenFiles, targetPath, "! Title: Huge AI Blocklist (Compiled)\n")
+
+    if opts.create_ublacklist:
+        # TODO: move this into the arguments
+        uBlacklistFormat = '*://*.{url}/*\n'
+
+        targetPath = join(opts.outputPath, "list_uBlacklist.txt")
+        if isdir(targetPath):
+            warnings.warn(f"Target path {targetPath} is a directory, skipping")
+        else:
+            if exists(targetPath) and isfile(targetPath):
                 remove(targetPath)
-                compileFiles(writtenFiles, )
-                with open(targetPath, "x") as targetFile:
-
-                    for filename in writtenFiles:
-                        if exists(filename) and isfile(filename):
-                            with open(filename, "r") as f:
-                                for line in f:
-                                    targetFile.writelines(line)
-
-
+            
+            with open(targetPath, "x") as file:
+                for inputFile in commonFiles:
+                    with open(inputFile, "r") as f:
+                        while True:
+                            headerLines, lines = __getLineList__.getLineList(f)
+                            if (len(headerLines) == 0 and len(lines) == 0):
+                                file.write('\n')
+                                break
+                            
+                            file.writelines([
+                                formatLine(line, uBlacklistFormat, "uBlacklist", commentReplacement="#")
+                                for line in headerLines + lines])
 
     pass
 
