@@ -1,5 +1,5 @@
 import argparse as arg
-import __getLineList__
+import getLineList
 import io
 import os
 
@@ -8,51 +8,6 @@ parser = arg.ArgumentParser(description="Organise domain names under each header
 parser.add_argument("file")
 
 args = parser.parse_args()
-
-
-def _getLineList(_file: io.TextIOWrapper, headerPrefix="! //", commentPrefix="!") -> [str]:
-    headerLines = []
-    lines: [str] = []
-    sortedLines = []
-
-    while True:
-        position = _file.tell()
-        line = _file.readline()
-
-        # We hit a header
-        if (line.startswith(headerPrefix)):
-            if len(headerLines) == 0:
-                headerLines.append(line)
-                continue
-            _file.seek(position) # reset to 
-            break
-
-        # A non-header comment
-        elif (line.startswith(commentPrefix)):
-            if len(lines) == 0:
-                headerLines.append(line) # Assume that the comment is extra description 
-            else:
-                lines.append(line)
-            continue
-
-        if (line == "\n"):
-            # empty newlines aren't kept in the sorted files at the moment
-            # prefer just writing an extra newline after each set of lines is written to the file
-            continue 
-
-        # We hit the end of the file
-        if (line == ""):
-            break
-
-        lines.append(line.removesuffix("\n"))
-
-    decorated = [(_line.removeprefix(commentPrefix).strip(" ."), i, _line) for i, _line in enumerate(lines)]
-    #print(decorated)
-    decorated.sort()
-    sortedLines = [line+"\n" for _line, i, line in decorated]
-    #print(sortedLines)
-    
-    return headerLines + sortedLines
 
 def main():
     if (args.file):
@@ -67,12 +22,12 @@ def main():
 
         targetFolder = os.path.dirname(args.file)
         targetName = os.path.basename(args.file)
-        targetPath = os.path.join(targetFolder, "sorted_"+targetName)
+        targetPath = os.path.join(targetFolder, "sorted_" + targetName)
         write_file = io.open(targetPath, "x")
         print(f"Writing to {targetPath}")
 
         while True:
-            lines = __getLineList__.getSortedLineList(file)
+            lines = getLineList.getSortedLineList(file)
             #print(lines)
             if (len(lines) == 0):
                 break
