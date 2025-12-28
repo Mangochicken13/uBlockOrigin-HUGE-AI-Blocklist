@@ -9,7 +9,7 @@ Also works on mobile ([iOS, iPadOS,](#iOS-iPadOS-Safari-only) [Android](#Android
 
 **One-click import (any platform)**
 
-If you have uBlock Origin installed, click [this link](https://subscribe.adblockplus.org?location=https%3A%2F%2Fraw.githubusercontent.com%2FMangochicken13%2FuBlockOrigin-HUGE-AI-Blocklist%2Fmain%2FExport%2Flist_uBlockOrigin.txt&title=Sites%20using%20AI%20generated%20content) to import the filter list in just a click! Quick and simple.
+If you have uBlock Origin installed, click [this link](https://subscribe.adblockplus.org?location=https%3A%2F%2Fraw.githubusercontent.com%2Flaylavish%2FuBlockOrigin-HUGE-AI-Blocklist%2Fmain%2FExport%2Flist_uBlockOrigin.txt&title=Sites%20using%20AI%20generated%20content) to import the filter list in just a click! Quick and simple.
 
 **Manual Import**
 
@@ -23,8 +23,21 @@ If you have uBlock Origin installed, click [this link](https://subscribe.adblock
 
 5. Copy and paste this URL into the dialogue box: 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_uBlockOrigin.txt
 ```
+
+> [!NOTE]
+> If you only use one search engine, or you only want to use the lists for engines you actively use, you can replace the last section of the url with `engine_name_in_lowercase-list_uBlockOrigin.txt`, or just copy the appropriate line(s) below.
+> ```
+> https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/google-list_uBlockOrigin.txt
+> ```
+> ```
+> https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/duckduckgo-list_uBlockOrigin.txt
+> ```
+> ```
+> https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/bing-list_uBlockOrigin.txt
+> ```
+
 
 6. Apply changes, and you're set!
 
@@ -50,7 +63,7 @@ https://github.com/user-attachments/assets/c379a750-53eb-4813-8cea-757f34ab5a2d
 
 **One-click filter import (Only for Chrome, Firefox doesn't support one-click import)**
 
-If you use Google Chrome/Chromium and have [uBlacklist installed](https://chromewebstore.google.com/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe), you can import the list in just one click. Click [this link](https://iorate.github.io/ublacklist/subscribe?name=Main+AI+Blocklist&url=https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list_uBlacklist.txt) to automatically subscribe to the list.
+If you use Google Chrome/Chromium and have [uBlacklist installed](https://chromewebstore.google.com/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe), you can import the list in just one click. Click [this link](https://iorate.github.io/ublacklist/subscribe?name=Main+AI+Blocklist&url=https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_uBlacklist.txt) to automatically subscribe to the list.
 
 **Manual Import**
 
@@ -66,7 +79,7 @@ If you use Google Chrome/Chromium and have [uBlacklist installed](https://chrome
   
 6. Copy and paste this url 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list_uBlacklist.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_uBlacklist.txt
 ``` 
 into the **URL** part of the dialogue box, then press the blue **Add** button.
 
@@ -98,7 +111,7 @@ into the **URL** part of the dialogue box, then press the blue **Add** button.
   
 8. Copy and paste this url 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list_uBlacklist.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_uBlacklist.txt
 ``` 
 into the **URL** part of the dialogue box, then press the blue **Add** button.
 
@@ -112,7 +125,7 @@ into the **URL** part of the dialogue box, then press the blue **Add** button.
 
   **One-click import**
 
-If you have uBlock Origin installed, click [this link](https://subscribe.adblockplus.org?location=https%3A%2F%2Fraw.githubusercontent.com%2Flaylavish%2FuBlockOrigin-HUGE-AI-Blocklist%2Fmain%2Flist.txt&title=Sites%20using%20AI%20generated%20content) to import the filter list in just a click! Quick and simple.
+If you have uBlock Origin installed, click [this link](https://subscribe.adblockplus.org?location=https%3A%2F%2Fraw.githubusercontent.com%2Flaylavish%2FuBlockOrigin-HUGE-AI-Blocklist%2Fmain%2FExport%2Flist_uBlockOrigin.txt&title=Sites%20using%20AI%20generated%20content) to import the filter list in just a click! Quick and simple.
 
 **Manual Import**
 
@@ -128,8 +141,21 @@ If you have uBlock Origin installed, click [this link](https://subscribe.adblock
 
 6. Copy and paste this URL into the dialogue box: 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_uBlockOrigin.txt
 ```
+
+> [!NOTE]
+> If you only use one search engine, or you only want to use the lists for engines you actively use, you can replace the last section of the url with `engine_name_in_lowercase-list_uBlockOrigin.txt`, or just copy the appropriate line(s) below.
+> ```
+> https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/google-list_uBlockOrigin.txt
+> ```
+> ```
+> https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/duckduckgo-list_uBlockOrigin.txt
+> ```
+> ```
+> https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/bing-list_uBlockOrigin.txt
+> ```
+
 
 6. Apply changes, and you're set!
 </details>
@@ -154,7 +180,7 @@ https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/
   
 7. Copy and paste this url 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list_uBlacklist.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_uBlacklist.txt
 ``` 
 into the **URL** part of the dialogue box, then press the blue **Add** button.
 
@@ -168,7 +194,7 @@ into the **URL** part of the dialogue box, then press the blue **Add** button.
 I've added a list in HOSTS format for pi-hole/adguard or for use in your own operating system's hosts file.
 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/noai_hosts.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/list_hosts.txt
 ```
 
 For use in your operating system, visit the url and copy-paste the contents inside your operating systems hosts file. 
@@ -193,7 +219,7 @@ Here's a simple guide on how to [access your hosts file on Linux, macOS, and Win
 
 ## Additional lists
 
-Currently, there are two lists: The [main](github.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/blob/main/list.txt) default list, and the [nuclear](github.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/blob/main/additional_list_nuclear.txt) list.
+Currently, there are two lists: The [main](github.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/blob/main/Export/list_uBlockOrigin.txt) default list, and the [nuclear](github.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/blob/main/Export/Nuclear_list_uBlockOrigin.txt) list.
 
 The nuclear list has sites that contain a mix of authentic and AI generated imagery (eg. DeviantArt, Artstation, Stock Photography sites, etc), which make it tricky to outright block in the main filter list, so I've designated it to a separate list that you can toggle on and off if you so desire.
 
@@ -203,7 +229,7 @@ The nuclear list has sites that contain a mix of authentic and AI generated imag
 <br>
 
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/additional_list_nuclear.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/Nuclear_list_uBlockOrigin.txt
 ```
 
 </details>
@@ -213,7 +239,7 @@ https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/
 <br>
   
 ```
-https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/list_uBlacklist_nuclear.txt
+https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/main/Export/Nuclear_list_uBlacklist.txt
 ```
 </details>
 
