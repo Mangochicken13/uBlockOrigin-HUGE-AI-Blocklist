@@ -1,12 +1,27 @@
 ! // Youtube AI "artists"/orgs
+! Try to sort this list manually, because youtube has a channel/generated_id and @channel_name syntax
+youtube.com/@shadiversity
 youtube.com/channel/UCkmMACUKpQeIxN9D9ARli1Q
+
 youtube.com/@SHAD_AI
+youtube.com/channel/UCvAQp7riw6hnM82tIylfjYg
+
 youtube.com/@sebastiankamph
 youtube.com/channel/UCvKqTb-65iAmXK59sFNKINQ
+
 youtube.com/@enigmatic_e
 youtube.com/channel/UClSBolYONOzQjOzE4cMHfpw
+
 youtube.com/@LaCarnevali
+youtube.com/channel/UC-hKTOl2_8FhQQJX9rH0xvA
+
 youtube.com/@OlivioSarikas
+youtube.com/channel/UCCKx8mAHiFus-XYQLy_WnaA
+
 youtube.com/channel/UCTppZt9BsBmu7tkpMRzvp3w
+
 youtube.com/@alkaid-art
+youtube.com/channel/UC6x4aM2_9yESw-Rx0anwiMw
+
 youtube.com/@TheDebugZone
+youtube.com/channel/UCoqhuiauEn0DShpi_qu1Wtw
