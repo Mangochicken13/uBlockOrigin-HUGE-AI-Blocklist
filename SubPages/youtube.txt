@@ -1,5 +1,6 @@
 ! // Youtube AI "artists"/orgs
 ! Try to sort this list manually, because youtube has a channel/generated_id and @channel_name syntax
+! You can find the generated id for a channel by opening the dev console and searching for 'meta property="og:url"' in the html search bar
 youtube.com/@shadiversity
 youtube.com/channel/UCkmMACUKpQeIxN9D9ARli1Q
 
