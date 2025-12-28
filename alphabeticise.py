@@ -26,7 +26,7 @@ def main():
             config = get_line_list.LineConfig()
 
             while True:
-                lines = get_line_list.get_sorted_line_list(write_file, config)
+                lines = get_line_list.get_sorted_line_list(file, config)
                 #print(lines)
                 if len(lines) == 0:
                     break
@@ -35,7 +35,6 @@ def main():
                 write_file.write("\n")
 
             file.close()
-            write_file.close()
 
         with open(target_path, "r+", encoding="utf-8") as output_file:
             last_newline_start_position = output_file.tell()

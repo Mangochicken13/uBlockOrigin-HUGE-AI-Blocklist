@@ -148,7 +148,7 @@ def format_line(line: str, format_options: FormatOptions) -> str:
     Format a line appropriately for the target engine & format
 
     :param str line: The contents of the line to be formatted
-    :return: The formatted line according to `format_options`. Returns `format_options.format` if `{url}` is not present and `line` is not a comment
+    :return: The formatted line according to `format_options`. Returns `format_options.line_format` if `{url}` is not present and `line` is not a comment
     """
 
     if line.startswith(format_options.header_prefix) or line.startswith(format_options.comment_prefix):
@@ -179,13 +179,17 @@ def format_line(line: str, format_options: FormatOptions) -> str:
             line = line + format_options.line_suffix_to_apply
         line = line + "\n"
 
-    line_format = format_options.format.rstrip() + "\n" # Normalise the format line ending, add if not present
+    line_format = format_options.line_format.rstrip() + "\n" # Normalise the format line ending, add if not present
     return line_format.replace("{url}", line.rstrip())
 
 def get_files(folder: str) -> list[str]:
     files = []
     if isdir(folder):
-        files.extend([join(dirpath, f) for (dirpath, dirnames, filenames) in walk(folder) for f in filenames])
+        files.extend([
+            join(dirpath, f)
+            for (dirpath, dirnames, filenames) in walk(folder)
+            for f in filenames
+        ])
     else:
         if isfile(folder):
             warnings.warn(f"path '{folder}' is a file, proceeding with only {folder} in the file list")
@@ -221,7 +225,7 @@ def write_formatted_lines_to_file(input_file_paths: list[str], output_file: Text
                     if (len(header_lines) == 0 and len(lines) == 0):
                         output_file.write('\n')
                         break
-                    
+
                     output_file.writelines([
                         format_line(line, format_options)
                         for line in header_lines + lines
