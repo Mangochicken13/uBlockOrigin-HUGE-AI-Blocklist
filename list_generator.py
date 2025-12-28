@@ -1,47 +1,49 @@
 import optparse as opt
 import warnings
-import getLineList
 from dataclasses import dataclass
 from io import TextIOWrapper
 from os import walk, makedirs, remove
 from os.path import isfile, isdir, join, exists
 from typing import overload
+import get_line_list
+
+opts = None
+args = None
 
 @dataclass
 class FormatOptions:
     """
-    :param str format: The format to place the line contents into. `{url}` in this string gets replaced with the line contents
-    :param str engine: The engine that this line is being created for. Replaces `{engine}` in a string beginning with :param str headerPrefix: or :param str commentPrefix:
-    :param str headerPrefix: The prefix expected for a commented header line
-    :param str commentPrefix: The prefix expected for a commented line
-    :param str commentReplacement: The string to replace the comment prefix with. Use when the engine doesn't use the default comment character (`!`)
-    :param bool applyPrefix: 
-    :param str linePrefixToApply:
-    :param bool applySuffix:
-    :param str lineSuffixToApply:
+    :param str line_format: The format to place the line contents into. `"{url}"` in this string gets replaced with the line contents
+    :param str engine: The engine that this line is being created for. Replaces `"{engine}"` in a string beginning with `header_prefix` or `comment_prefix`
+    :param str header_prefix: The prefix expected for a commented header line
+    :param str comment_prefix: The prefix expected for a commented line
+    :param str comment_replacement: The string to replace the comment prefix with. Use when the engine doesn't use the default comment character (`!`)
+    
+    :param bool apply_prefix: Whether to check for and apply `line_prefix_to_apply`
+    :param bool apply_suffix: Whether to check for and apply `line_suffix_to_apply`
 
-    :param bool hostsMode:
+    :param bool hosts_mode: Removes leading whitespace and periods, comments out lines that contain `/`
     """
-    format: str
+    line_format: str
     engine: str
-    headerPrefix: str = "! //"
-    commentPrefix: str = "!"
-    commentReplacement: str = "!"
-    applyPrefix: bool = False
-    linePrefixToApply: str = ""
-    applySuffix: bool = False
-    lineSuffixToApply: str = ""
+    header_prefix: str = "! //"
+    comment_prefix: str = "!"
+    comment_replacement: str = "!"
+    apply_prefix: bool = False
+    line_prefix_to_apply: str = ""
+    apply_suffix: bool = False
+    line_suffix_to_apply: str = ""
 
     # extra handling for the hosts.txt format
-    hostsMode: bool = False
+    hosts_mode: bool = False
 
-def getOpts() -> opt.Values:
+def get_opts() -> opt.Values:
     parser = opt.OptionParser(
         description="Site blocklist generator script"
         )
-    
-    formats = opt.OptionGroup(parser, "Formats")
 
+    ## Formats
+    formats = opt.OptionGroup(parser, "Formats")
 
     # Hosts
     formats.add_option(
@@ -94,83 +96,93 @@ def getOpts() -> opt.Values:
     parser.add_option_group(formats)
 
 
+    ## Folders
+    folders = opt.OptionGroup(parser, "Folders")
+    folders.add_option(
+        "--common-path",
+        dest='common_path', default="Common",
+        help='Path for the folder containing the common lists \nDefault = "Common"')
+    folders.add_option(
+        "--subpage-path",
+        dest='subpage_path', default="SubPages",
+        help='Path for the folder containing the subpage lists \nDefault = "SubPages"')
+    folders.add_option(
+        "--nuclear-path",
+        dest='nuclear_path', default="Nuclear",
+        help='Path for the folder containing the nuclear option lists \nDefault = "Nuclear"')
+    folders.add_option(
+        "--element-path",
+        dest='element_path', default="Elements",
+        help='Path for the folder containing additional elements added to the uBlockOrigin list \nDefault = "Elements"')
+
+    parser.add_option_group(folders)
+
     # Nuclear
     parser.add_option(
         "-n", "--nuclear", 
         action='store_true', dest='create_nuclear_list', default=True)
-    
-
-    # Folders
     parser.add_option(
-        "--common-path",
-        dest='commonPath', default="Common",)
-    parser.add_option(
-        "--subpage-path",
-        dest='subpagePath', default="SubPages",)
-    parser.add_option(
-        "--nuclear-path",
-        dest='nuclearPath', default="Nuclear",
-        help='Path for the folder containing the nuclear option lists')
-    parser.add_option(
-        "--element-path",
-        dest='elementPath', default="Elements",
-        help='Path for the folder containing additional elements added to the uBlockOrigin list')
-
+        "--no-nuclear",
+        action='store_false', dest='create_nuclear_list',)
 
     # Export
     parser.add_option(
         "-o", "--output-folder",
-        dest='outputPath', default="Export",
-        help='')
+        dest='output_path', default="Export",
+        help='The folder to write the compiled and formatted files to')
     parser.add_option(
         "--overwrite",
         action='store_true', dest='overwrite', default=True,
-        help='')
+        help='Overwrite existing exported files (default)')
+    parser.add_option(
+        "--no-overwrite",
+        action='store_false', dest='overwrite',
+        help="Don't allow ovewriting existing files in the export directory")
 
-    opts, args = parser.parse_args()
+    loaded_opts, loaded_args = parser.parse_args()
 
-    return opts
+    return loaded_opts, loaded_args
 
-def formatLine(line: str, formatOptions: FormatOptions) -> str:
+def format_line(line: str, format_options: FormatOptions) -> str:
     """
     Format a line appropriately for the target engine & format
 
     :param str line: The contents of the line to be formatted
-    :return: The formatted line according to `formatOptions`. Returns `formatOptions.format` if `{url}` is not present and `line` is not a comment
+    :return: The formatted line according to `format_options`. Returns `format_options.format` if `{url}` is not present and `line` is not a comment
     """
-    
-    if line.startswith(formatOptions.headerPrefix) or line.startswith(formatOptions.commentPrefix):
-        line = line.replace("{engine}", formatOptions.engine)
-        line = line.replace(formatOptions.commentPrefix, formatOptions.commentReplacement, 1) # replace the comment character for other file types
+
+    if line.startswith(format_options.header_prefix) or line.startswith(format_options.comment_prefix):
+        line = line.replace("{engine}", format_options.engine)
+        # replace the comment character for other file types
+        line = line.replace(format_options.comment_prefix, format_options.comment_replacement, 1)
         return line
 
     if line.rstrip() == "":
         return line
-    
-    if formatOptions.hostsMode:
+
+    if format_options.hosts_mode:
         # remove leading periods
         # still continue to allow the www. prefix to be applied?
-        line = line.strip(" .") 
+        line = line.strip(" .")
 
-        if line.__contains__("/"):
+        if "/" in line:
             # afaik the hosts format doesn't allow individual pages? still return the line commented though
             return "#       " + line
-        
 
-    if formatOptions.applyPrefix:
-        if not line.startswith(formatOptions.linePrefixToApply):
-            line = formatOptions.linePrefixToApply + line
-    
-    if formatOptions.applySuffix:
+    if format_options.apply_prefix:
+        if not line.startswith(format_options.line_prefix_to_apply):
+            line = format_options.line_prefix_to_apply + line
+
+    if format_options.apply_suffix:
         line = line.rstrip()
-        if not line.endswith(formatOptions.lineSuffixToApply):
-            line = line + formatOptions.lineSuffixToApply
+        if not line.endswith(format_options.line_suffix_to_apply):
+            line = line + format_options.line_suffix_to_apply
         line = line + "\n"
 
-    format = formatOptions.format.rstrip() + "\n" # Normalise the format line ending, add if not present
-    return format.replace("{url}", line.rstrip())
+    line_format = format_options.format.rstrip() + "\n" # Normalise the format line ending, add if not present
+    return line_format.replace("{url}", line.rstrip())
 
-def getFiles(folder: str) -> list[str]:
+def get_files(folder: str) -> list[str]:
     files = []
     if isdir(folder):
         files.extend([join(dirpath, f) for (dirpath, dirnames, filenames) in walk(folder) for f in filenames])
@@ -180,203 +192,214 @@ def getFiles(folder: str) -> list[str]:
             files.append(folder)
         else:
             warnings.warn(f"path '{folder}' is not a file or dir, proceeding with no files")
-    
+
     return files
 
 @overload
-def getFiles_Sorted(folder: str) -> list[str]: ...
+def get_files_sorted(folder: str) -> list[str]: ...
 @overload
-def getFiles_Sorted(files: list[str]) -> list[str]: ...
+def get_files_sorted(files: list[str]) -> list[str]: ...
 
-def getFiles_Sorted(input) -> list[str]:
-    #print(type(input), input)
-    if type(input) == str:
-        files = getFiles(input)
+def get_files_sorted(file_input) -> list[str]:
+    if isinstance(file_input, str):
+        files = get_files(file_input)
         return sorted(files, key=str.lower)
-    if type(input) == list[str]:
-        return sorted(input, key=str.lower)
 
+    if isinstance(file_input, list[str]):
+        return sorted(file_input, key=str.lower)
 
-def writeFormattedLinesToFile(inputFilePaths: list[str], outputFile: TextIOWrapper, formatOptions: FormatOptions):
+def write_formatted_lines_to_file(input_file_paths: list[str], output_file: TextIOWrapper, format_options: FormatOptions):
+
+    line_config = get_line_list.LineConfig(expand_domains=True)
 
     # write all the formatted lines from the appropriate files
-    lineConfig = getLineList.LineConfig(expandDomains=True)
-
-    for inputFile in inputFilePaths:
-        if isfile(inputFile):
-            with open(inputFile, "r") as f:
+    for input_file in input_file_paths:
+        if isfile(input_file):
+            with open(input_file, "r", encoding="utf-8") as f:
                 while True:
-                    headerLines, lines = getLineList.getLineList(f, lineConfig)
-                    if (len(headerLines) == 0 and len(lines) == 0):
-                        outputFile.write('\n')
+                    header_lines, lines = get_line_list.get_line_list(f, line_config)
+                    if (len(header_lines) == 0 and len(lines) == 0):
+                        output_file.write('\n')
                         break
                     
-                    outputFile.writelines([
-                        formatLine(line, formatOptions)
-                        for line in headerLines + lines
+                    output_file.writelines([
+                        format_line(line, format_options)
+                        for line in header_lines + lines
                     ])
 
-                    outputFile.write("\n")
+                    output_file.write("\n")
 
-def tryWriteToPath(path: str, inputFilePaths: list[str], formatOptions: FormatOptions, overwrite: bool = True) -> bool:
-    
+def try_write_to_path(path: str, input_file_paths: list[str], format_options: FormatOptions) -> bool:
+
     if exists(path) and isfile(path):
-        if overwrite:
+        if opts.overwrite:
             remove(path)
         else:
-            warnings.warn(f"Target file exists and overwriting is disabled, skipping")
+            warnings.warn(f"Target file {path} exists and overwriting is disabled, skipping")
             return False
-        
+
     elif isdir(path):
         warnings.warn(f"Target file {path} is a directory, skipping")
         return False
 
-    with open(path, "x") as f:
-        writeFormattedLinesToFile(inputFilePaths, f, formatOptions)
+    with open(path, "x", encoding="utf-8") as f:
+        write_formatted_lines_to_file(input_file_paths, f, format_options)
         print(f"Successfully wrote {path}")
         return True
 
-def compileFiles(inputFilePaths: list[str], outputFile: str, outputHeader: str, overwrite: bool = True) -> bool:
-    if exists(outputFile):
-        if isdir(outputFile):
-            warnings.warn(f"Targeted path {outputFile} is a directory, cancelling writing from {inputFilePaths}")
+def compile_files(input_file_paths: list[str], output_file: str, output_header: str) -> bool:
+    if exists(output_file):
+        if isdir(output_file):
+            warnings.warn(f"Targeted path {output_file} is a directory, cancelling writing from {input_file_paths}")
             return False
-            
-        if overwrite:
-            remove(outputFile)
+
+        if opts.overwrite:
+            remove(output_file)
         else:
-            warnings.warn(f"Target file exists and overwriting is disabled, skipping")
+            warnings.warn(f"Target file {output_file} exists and overwriting is disabled, skipping")
             return False
-    
-    with open(outputFile, "x") as f:
-        f.write(outputHeader+'\n')
-        for path in inputFilePaths:
+
+    with open(output_file, "x", encoding="utf-8") as f:
+        f.write(output_header+'\n')
+        for path in input_file_paths:
             if isfile(path):
-                with open(path, "r") as inputFile:
-                    for line in inputFile:
+                with open(path, "rt", encoding="utf-8") as input_file:
+                    for line in input_file:
                         f.write(line)
-                    
+
                     f.write('\n')
-    
-    print(f"Successfully compiled {outputFile}")
+
+    print(f"Successfully compiled {output_file}")
     return True
 
 def main():
-    opts = getOpts()
-    #print(opts)
-    
-    commonFiles = getFiles_Sorted(opts.commonPath)
-    subpageFiles = getFiles_Sorted(opts.subpagePath)
-    nuclearFiles = getFiles_Sorted(opts.nuclearPath)
-    elementFiles = getFiles_Sorted(opts.elementPath)
+    global opts, args
+    opts, args = get_opts()
 
-    if isfile(opts.outputPath):
-        warnings.warn(f"Output path {opts.outputPath} is a file, not a directiory. Cancelling compilation")
+    common_files = get_files_sorted(opts.common_path)
+    subpage_files = get_files_sorted(opts.subpage_path)
+    nuclear_files = get_files_sorted(opts.nuclear_path)
+    element_files = get_files_sorted(opts.element_path)
+
+    if isfile(opts.output_path):
+        warnings.warn(f"Output path {opts.output_path} is a file, not a directiory. Cancelling operations")
         return
-    elif not exists(opts.outputPath):
-        makedirs(opts.outputPath)
+
+    if not exists(opts.output_path):
+        makedirs(opts.output_path)
 
     if opts.create_ublockorigin:
         # TODO: move this into the arguments
-        uBlockFormats = {
+        ublock_formats = {
             "google": 'google.com##a[href*="{url}"]:upward(2):remove()',
             "duckduckgo": 'duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()',
             "bing": 'bing.com##a[href*="{url}"]:upward(li):remove()',
         }
 
-        writtenFiles = []
-        writtenFiles_Nuclear = []
+        format_options = FormatOptions("", "")
+        element_format = FormatOptions("{url}", "")
 
-        for engine in uBlockFormats:
-            
-            lineFormat = FormatOptions(
-                format=uBlockFormats[engine],
-                engine=engine,
+        written_files = []
+        written_files_nuclear = []
+
+        for engine, line_format in ublock_formats.items():
+            format_options.line_format = line_format
+            format_options.engine = engine
+
+            target_path = join(opts.output_path, format_options.engine + "-list_uBlockOrigin.txt")
+
+            was_file_written = try_write_to_path(
+                target_path,
+                common_files + subpage_files,
+                format_options
             )
 
-            targetPath = join(opts.outputPath, lineFormat.engine + "-list_uBlockOrigin.txt")
-            
-            wasFileWritten = tryWriteToPath(targetPath, commonFiles + subpageFiles, lineFormat, opts.overwrite)
+            if was_file_written:
+                # Append extra elements to ublock format
+                with open(target_path, "a", encoding="utf-8") as f:
+                    for file in element_files:
+                        with open(file, "rt", encoding="utf-8") as r:
+                            for line in r:
+                                f.write(format_line(line, element_format))
 
-            if wasFileWritten:
-                writtenFiles.append(targetPath)
+                written_files.append(target_path)
 
         if opts.create_nuclear_list:
+            for engine, line_format in ublock_formats.items():
+                format_options.line_format = line_format
+                format_options.engine = engine + " (Nuclear)"
 
-            for engine in uBlockFormats:
-                lineFormat = FormatOptions(
-                    format=uBlockFormats[engine],
-                    engine=engine + " (Nuclear)"
-                )
+                target_path = join(opts.output_path, "Nuclear_" + engine + "-list_uBlockOrigin.txt")
 
-                targetPath = join(opts.outputPath, "Nuclear_" + engine + "-list_uBlockOrigin.txt")
+                was_file_written = try_write_to_path(target_path, nuclear_files, format_options)
 
-                wasFileWritten = tryWriteToPath(targetPath, nuclearFiles, lineFormat, opts.overwrite)
-
-                if wasFileWritten:
-                    writtenFiles_Nuclear.append(targetPath)
+                if was_file_written:
+                    written_files_nuclear.append(target_path)
 
         # grab all the written files and add them together
         if opts.compile_ublockorigin:
-            targetPath = join(opts.outputPath, "list_uBlockOrigin.txt")
-            compileFiles(writtenFiles, targetPath, "! Title: Huge AI Blocklist (Compiled)\n", opts.overwrite)
+            target_path = join(opts.output_path, "list_uBlockOrigin.txt")
+            compile_files(written_files, target_path, "! Title: Huge AI Blocklist (Compiled)\n")
 
             if opts.create_nuclear_list:
-                targetPath = join(opts.outputPath, "Nuclear_list_uBlockOrigin.txt")
-                compileFiles(writtenFiles, targetPath, "! Title: Huge AI Blocklist (Nuclear) (Compiled)\n", opts.overwrite)
+                target_path = join(opts.output_path, "Nuclear_list_uBlockOrigin.txt")
+                compile_files(written_files, target_path, "! Title: Huge AI Blocklist (Nuclear) (Compiled)\n")
 
     if opts.create_ublacklist:
         # TODO: move this into the arguments
-        uBlacklistFormat = FormatOptions(
-            # Need to discuss 
-            format='*://*{url}*',
+        ublacklist_format = FormatOptions(
+            line_format='*://*{url}*',
             engine="uBlacklist",
-            commentReplacement="#",
-            applyPrefix=True,
-            linePrefixToApply=".",
-            applySuffix=True,
-            lineSuffixToApply="/"
-            )
+            comment_replacement="#",
+            apply_prefix=True,
+            line_prefix_to_apply=".",
+            apply_suffix=True,
+            line_suffix_to_apply="/"
+        )
 
-        targetPath = join(opts.outputPath, "list_uBlacklist.txt")
+        target_path = join(opts.output_path, "list_uBlacklist.txt")
 
-        wasFileWritten = tryWriteToPath(targetPath, commonFiles + subpageFiles, uBlacklistFormat, opts.overwrite)
+        was_file_written = try_write_to_path(
+            target_path,
+            common_files + subpage_files,
+            ublacklist_format
+        )
 
         if opts.create_nuclear_list:
-            targetPath = join(opts.outputPath, "Nuclear_list_uBlacklist.txt")
+            target_path = join(opts.output_path, "Nuclear_list_uBlacklist.txt")
 
-            wasFileWritten = tryWriteToPath(targetPath, nuclearFiles, uBlacklistFormat, opts.overwrite)
+            was_file_written = try_write_to_path(target_path, nuclear_files, ublacklist_format)
 
     if opts.create_hosts:
-        hostsFormats = [
+        hosts_formats = [
             FormatOptions(
-                format='0.0.0.0 {url}',
+                line_format='0.0.0.0 {url}',
                 engine='hosts',
-                commentReplacement="#",
-                hostsMode=True
+                comment_replacement="#",
+                hosts_mode=True
             ),
             FormatOptions(
-                format='0.0.0.0 www{url}',
+                line_format='0.0.0.0 www{url}',
                 engine='hosts-www',
-                commentReplacement="#",
-                applyPrefix=True,
-                linePrefixToApply='.',
-                hostsMode=True
+                comment_replacement="#",
+                apply_prefix=True,
+                line_prefix_to_apply='.',
+                hosts_mode=True
             )
         ]
 
-        writtenFiles = []
+        written_files = []
 
-        for format in hostsFormats:
-            targetPath = join(opts.outputPath, format.engine + ".txt")
+        for format_option in hosts_formats:
+            target_path = join(opts.output_path, format_option.engine + ".txt")
 
-            wasFileWritten = tryWriteToPath(targetPath, commonFiles, format, opts.overwrite)
-            if wasFileWritten:
-                writtenFiles.append(targetPath)
-        
+            was_file_written = try_write_to_path(target_path, common_files, format_option)
+            if was_file_written:
+                written_files.append(target_path)
+
         if opts.compile_hosts:
-            targetPath = join(opts.outputPath, "list_hosts.txt")
-            compileFiles(writtenFiles, targetPath, "# Title: Huge AI Blocklist (Compiled)\n", opts.overwrite)
+            target_path = join(opts.output_path, "list_hosts.txt")
+            compile_files(written_files, target_path, "# Title: Huge AI Blocklist (Compiled)\n")
 
 
 if __name__ == '__main__':
