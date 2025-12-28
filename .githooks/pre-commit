@@ -1,22 +1,4 @@
 #!/bin/sh
 #
-# Wrapper script for the new file structure
-
-declare -A engineHashmap
-
-engineHashmap["uBo-google"]='google.com##a[href*="{url}"]:upward(2):remove()'
-engineHashmap["uBo-duckDuckGo"]='duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()'
-engineHashmap["uBo-bing"]='bing.com##a[href*="{url}"]:upward(li):remove()'
-
-engineHashmap["uBlacklist"]="*://*.{url}/*"
-
-engineHashmap["hosts"]="0.0.0.0 {url}"
-engineHashmap["hosts-www"]="0.0.0.0 www.{url}"
-
-for key in ${!engineHashmap[@]};
-do
-    echo "$key"
-    echo "${engineHashmap[$key]}"
-
-    echo ""
-done
+# Try to call the list_generator.py script? 
+# would want to get the export path from that somehow to properly add the files if they change
