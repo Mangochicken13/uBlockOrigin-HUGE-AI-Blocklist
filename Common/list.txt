@@ -302,10 +302,8 @@ thetawise.ai
 thisanimedoesnotexist.ai
 tldrdev.ai
 tooldirectory.ai
-toolify.ai
 toolpilot.ai
 toolsforhumans.ai
-topapps.ai
 tryleap.ai
 tunib.ai
 typecast.ai
