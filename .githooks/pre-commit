@@ -1,4 +1,0 @@
-#!/bin/sh
-#
-# Try to call the list_generator.py script? 
-# would want to get the export path from that somehow to properly add the files if they change
