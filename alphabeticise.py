@@ -27,7 +27,6 @@ def main():
 
             while True:
                 lines = get_line_list.get_sorted_line_list(file, config)
-                #print(lines)
                 if len(lines) == 0:
                     break
 

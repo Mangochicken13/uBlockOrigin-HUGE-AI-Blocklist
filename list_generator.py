@@ -7,8 +7,8 @@ from os.path import isfile, isdir, join, exists
 from typing import overload
 import get_line_list
 
-opts = None
-args = None
+opts: opt.Values
+args: list[str]
 
 @dataclass
 class FormatOptions:
@@ -37,7 +37,7 @@ class FormatOptions:
     # extra handling for the hosts.txt format
     hosts_mode: bool = False
 
-def get_opts() -> opt.Values:
+def get_opts() -> tuple[opt.Values, list[str]]:
     parser = opt.OptionParser(
         description="Site blocklist generator script"
         )
@@ -46,11 +46,11 @@ def get_opts() -> opt.Values:
     formats = opt.OptionGroup(parser, "Formats")
 
     # Hosts
-    formats.add_option(
+    _ = formats.add_option(
         "--hosts",
         action='store_true', dest='create_hosts', default=True,
         help='Enable hosts.txt file creation (default)')
-    formats.add_option(
+    _ = formats.add_option(
         "--no-hosts",
         action='store_false', dest='create_hosts',
         help='Disable all hosts file creation. Includes --no-compile-hosts')
@@ -65,76 +65,76 @@ def get_opts() -> opt.Values:
 
 
     # uBlacklist
-    formats.add_option(
+    _ = formats.add_option(
         "--ublacklist",
         action='store_true', dest='create_ublacklist', default=True,
         help='Create uBlacklist file format (default)')
-    formats.add_option(
+    _ = formats.add_option(
         "--no-ublacklist", 
         action='store_false', dest='create_ublacklist',
         help="Don't create uBlacklist file format")
 
 
     # uBlockOrigin
-    formats.add_option(
+    _ = formats.add_option(
         "--ublockorigin", "--ubo", "--ublock",
         action='store_true', dest='create_ublockorigin', default=True,
         help='Create uBlockOrigin file (default)')
-    formats.add_option(
+    _ = formats.add_option(
         "--no-ublockorigin", "--no-ubo", "--no-ublock",
         action='store_false', dest='create_ublockorigin',
         help='Disable all uBlockOrigin file creation. Includes --no-compile-ublockorigin')
-    formats.add_option(
+    _ = formats.add_option(
         "--compile-ublockorigin", "--compile-ubo", "--compile-ublock",
         action='store_true', dest='compile_ublockorigin', default=True,
         help='Compile all uBlockOrigin formats (default)')
-    formats.add_option(
+    _ = formats.add_option(
         "--no-compile-ublockorigin", "--no-compile-ubo", "--no-compile-ublock",
         action='store_false', dest='compile_ublockorigin',
         help="Don't compile the uBlockOrigin formats together")
 
-    parser.add_option_group(formats)
+    _ = parser.add_option_group(formats)
 
 
     ## Folders
     folders = opt.OptionGroup(parser, "Folders")
-    folders.add_option(
+    _ = folders.add_option(
         "--common-path",
         dest='common_path', default="Common",
         help='Path for the folder containing the common lists \nDefault = "Common"')
-    folders.add_option(
+    _ = folders.add_option(
         "--subpage-path",
         dest='subpage_path', default="SubPages",
         help='Path for the folder containing the subpage lists \nDefault = "SubPages"')
-    folders.add_option(
+    _ = folders.add_option(
         "--nuclear-path",
         dest='nuclear_path', default="Nuclear",
         help='Path for the folder containing the nuclear option lists \nDefault = "Nuclear"')
-    folders.add_option(
+    _ = folders.add_option(
         "--element-path",
         dest='element_path', default="Elements",
         help='Path for the folder containing additional elements added to the uBlockOrigin list \nDefault = "Elements"')
 
-    parser.add_option_group(folders)
+    _ = parser.add_option_group(folders)
 
     # Nuclear
-    parser.add_option(
+    _ = parser.add_option(
         "-n", "--nuclear", 
         action='store_true', dest='create_nuclear_list', default=True)
-    parser.add_option(
+    _ = parser.add_option(
         "--no-nuclear",
         action='store_false', dest='create_nuclear_list',)
 
     # Export
-    parser.add_option(
+    _ = parser.add_option(
         "-o", "--output-folder",
         dest='output_path', default="Export",
         help='The folder to write the compiled and formatted files to')
-    parser.add_option(
+    _ = parser.add_option(
         "--overwrite",
         action='store_true', dest='overwrite', default=True,
         help='Overwrite existing exported files (default)')
-    parser.add_option(
+    _ = parser.add_option(
         "--no-overwrite",
         action='store_false', dest='overwrite',
         help="Don't allow ovewriting existing files in the export directory")
@@ -183,11 +183,11 @@ def format_line(line: str, format_options: FormatOptions) -> str:
     return line_format.replace("{url}", line.rstrip())
 
 def get_files(folder: str) -> list[str]:
-    files = []
+    files: list[str] = []
     if isdir(folder):
         files.extend([
             join(dirpath, f)
-            for (dirpath, dirnames, filenames) in walk(folder)
+            for (dirpath, _dirnames, filenames) in walk(folder)
             for f in filenames
         ])
     else:
@@ -200,17 +200,17 @@ def get_files(folder: str) -> list[str]:
     return files
 
 @overload
-def get_files_sorted(folder: str) -> list[str]: ...
+def get_files_sorted(folder: str, /) -> list[str]: ...
 @overload
-def get_files_sorted(files: list[str]) -> list[str]: ...
+def get_files_sorted(files: list[str], /) -> list[str]: ...
 
-def get_files_sorted(file_input) -> list[str]:
-    if isinstance(file_input, str):
-        files = get_files(file_input)
+def get_files_sorted(input: str | list[str]) -> list[str]:
+    if isinstance(input, str):
+        files = get_files(input)
         return sorted(files, key=str.lower)
 
-    if isinstance(file_input, list[str]):
-        return sorted(file_input, key=str.lower)
+    if isinstance(input, list[str]):
+        return sorted(input, key=str.lower)
 
 def write_formatted_lines_to_file(input_file_paths: list[str], output_file: TextIOWrapper, format_options: FormatOptions):
 
@@ -223,7 +223,7 @@ def write_formatted_lines_to_file(input_file_paths: list[str], output_file: Text
                 while True:
                     header_lines, lines = get_line_list.get_line_list(f, line_config)
                     if (len(header_lines) == 0 and len(lines) == 0):
-                        output_file.write('\n')
+                        _ = output_file.write('\n')
                         break
 
                     output_file.writelines([
@@ -231,7 +231,7 @@ def write_formatted_lines_to_file(input_file_paths: list[str], output_file: Text
                         for line in header_lines + lines
                     ])
 
-                    output_file.write("\n")
+                    _ = output_file.write("\n")
 
 def try_write_to_path(path: str, input_file_paths: list[str], format_options: FormatOptions) -> bool:
 
@@ -264,14 +264,14 @@ def compile_files(input_file_paths: list[str], output_file: str, output_header: 
             return False
 
     with open(output_file, "x", encoding="utf-8") as f:
-        f.write(output_header+'\n')
+        _ = f.write(output_header+'\n')
         for path in input_file_paths:
             if isfile(path):
                 with open(path, "rt", encoding="utf-8") as input_file:
                     for line in input_file:
-                        f.write(line)
+                        _ = f.write(line)
 
-                    f.write('\n')
+                    _ = f.write('\n')
 
     print(f"Successfully compiled {output_file}")
     return True
@@ -324,7 +324,7 @@ def main():
                     for file in element_files:
                         with open(file, "rt", encoding="utf-8") as r:
                             for line in r:
-                                f.write(format_line(line, element_format))
+                                _ = f.write(format_line(line, element_format))
 
                 written_files.append(target_path)
 
@@ -343,11 +343,11 @@ def main():
         # grab all the written files and add them together
         if opts.compile_ublockorigin:
             target_path = join(opts.output_path, "list_uBlockOrigin.txt")
-            compile_files(written_files, target_path, "! Title: Huge AI Blocklist (Compiled)\n")
+            _ = compile_files(written_files, target_path, "! Title: Huge AI Blocklist (Compiled)\n")
 
             if opts.create_nuclear_list:
                 target_path = join(opts.output_path, "Nuclear_list_uBlockOrigin.txt")
-                compile_files(written_files, target_path, "! Title: Huge AI Blocklist (Nuclear) (Compiled)\n")
+                _ = compile_files(written_files, target_path, "! Title: Huge AI Blocklist (Nuclear) (Compiled)\n")
 
     if opts.create_ublacklist:
         # TODO: move this into the arguments
@@ -401,9 +401,9 @@ def main():
             if was_file_written:
                 written_files.append(target_path)
 
-        if opts.compile_hosts:
-            target_path = join(opts.output_path, "list_hosts.txt")
-            compile_files(written_files, target_path, "# Title: Huge AI Blocklist (Compiled)\n")
+            if opts.compile_hosts:
+                target_path = join(opts.output_path, "list_hosts.txt")
+                _ = compile_files(written_files, target_path, "# Title: Huge AI Blocklist (Compiled)\n")
 
 
 if __name__ == '__main__':

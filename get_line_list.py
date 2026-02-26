@@ -14,11 +14,11 @@ class LineConfig:
     expand_domains: bool = False
 
 
-def get_line_list(file: TextIOWrapper, config: LineConfig) -> (list[str], list[str]):
-    header_lines = []
+def get_line_list(file: TextIOWrapper, config: LineConfig) -> tuple[list[str], list[str]]:
+    header_lines: list[str] = []
     lines: list[str] = []
 
-    domains = []
+    domains: list[str] = []
 
     while True:
         position = file.tell()
@@ -83,27 +83,27 @@ def get_line_list(file: TextIOWrapper, config: LineConfig) -> (list[str], list[s
     return (header_lines, lines)
 
 @overload
-def get_sorted_line_list(line_list: (list[str], list[str]), config: LineConfig) -> list[str]: ...
+def get_sorted_line_list(line_list: tuple[list[str], list[str]], config: LineConfig, /) -> list[str]: ...
 @overload
-def get_sorted_line_list(file: TextIOWrapper, config: LineConfig) -> list[str]: ...
+def get_sorted_line_list(file: TextIOWrapper, config: LineConfig, /) -> list[str]: ...
 
-def get_sorted_line_list(file_input, config: LineConfig) -> list[str]:
-    header_lines = []
-    lines = []
+def get_sorted_line_list(input, config: LineConfig) -> list[str]:
+    header_lines: list[str] = []
+    lines: list[str] = []
 
-    if isinstance(file_input, tuple):
-        header_lines = file_input[0]
-        lines = file_input[1]
+    if isinstance(input, tuple):
+        header_lines = input[0]
+        lines = input[1]
 
-    elif isinstance(file_input, TextIOWrapper):
-        header_lines, lines = get_line_list(file=file_input, config=config)
+    elif isinstance(input, TextIOWrapper):
+        header_lines, lines = get_line_list(file=input, config=config)
 
     decorated = [
         (line.removeprefix(config.comment_prefix).strip(" ./").lower(), i, line)
         for i, line in enumerate(lines)
     ]
     decorated.sort()
-    sorted_lines = [line for line_Sorted, i, line in decorated]
+    sorted_lines = [line for _line_Sorted, _i, line in decorated]
 
     return header_lines + sorted_lines
 
