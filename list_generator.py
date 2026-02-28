@@ -13,7 +13,7 @@ args: list[str]
 @dataclass
 class FormatOptions:
     """
-    :param str line_format: The format to place the line contents into. `"{url}"` in this string gets replaced with the line contents
+    :param list[str] line_formats: The formats to place the line contents into. `"{url}"` in this string gets replaced with the line contents
     :param str engine: The engine that this line is being created for. Replaces `"{engine}"` in a string beginning with `header_prefix` or `comment_prefix`
     :param str header_prefix: The prefix expected for a commented header line
     :param str comment_prefix: The prefix expected for a commented line
@@ -24,11 +24,40 @@ class FormatOptions:
 
     :param bool hosts_mode: Removes leading whitespace and periods, comments out lines that contain `/`
     """
-    line_format: str
-    engine: str
+    def __init__(self) -> None:
+        self._line_formats: list[str] = ["{url}"]
+        self.engine = ""
+        self.header_prefix = "! //"
+        self.comment_prefix = "!"
+        self.comment_prefix_replacement = "!"
+        self.apply_prefix = False
+        self.line_prefix_to_apply = ""
+        self.apply_suffix = False
+        self.line_suffix_to_apply = ""
+        self.hosts_mode = False
+
+    # Guarding against formats being assigned without a newline character included
+    @property
+    def line_formats(self) -> list[str]:
+        return self._line_formats
+
+    @line_formats.setter
+    def line_formats(self, value: list[str]):
+        input_formats = value
+        output_formats: list[str] = []
+        for format in input_formats:
+            format = format.rstrip() + "\n"
+            output_formats.append(format)
+        self._line_formats = output_formats.copy()
+
+    @line_formats.deleter
+    def line_formats(self):
+        del self._line_formats
+
+    engine: str = ""
     header_prefix: str = "! //"
     comment_prefix: str = "!"
-    comment_replacement: str = "!"
+    comment_prefix_replacement: str = "!"
     apply_prefix: bool = False
     line_prefix_to_apply: str = ""
     apply_suffix: bool = False
@@ -40,7 +69,7 @@ class FormatOptions:
 def get_opts() -> tuple[opt.Values, list[str]]:
     parser = opt.OptionParser(
         description="Site blocklist generator script"
-        )
+    )
 
     ## Formats
     formats = opt.OptionGroup(parser, "Formats")
@@ -54,14 +83,14 @@ def get_opts() -> tuple[opt.Values, list[str]]:
         "--no-hosts",
         action='store_false', dest='create_hosts',
         help='Disable all hosts file creation. Includes --no-compile-hosts')
-    formats.add_option(
-        "--compile-hosts",
-        action='store_true', dest='compile_hosts', default=True,
-        help='Compile all hosts formats (default)')
-    formats.add_option(
-        "--no-compile-hosts",
-        action='store_false', dest='compile_hosts',
-        help="Don't compile the hosts.txt formats together")
+    # _ = formats.add_option(
+    #     "--compile-hosts",
+    #     action='store_true', dest='compile_hosts', default=True,
+    #     help='Compile all hosts formats (default)')
+    # _ = formats.add_option(
+    #     "--no-compile-hosts",
+    #     action='store_false', dest='compile_hosts',
+    #     help="Don't compile the hosts.txt formats together")
 
 
     # uBlacklist
@@ -143,7 +172,7 @@ def get_opts() -> tuple[opt.Values, list[str]]:
 
     return loaded_opts, loaded_args
 
-def format_line(line: str, format_options: FormatOptions) -> str:
+def format_line(line: str, format_options: FormatOptions) -> list[str]:
     """
     Format a line appropriately for the target engine & format
 
@@ -154,11 +183,11 @@ def format_line(line: str, format_options: FormatOptions) -> str:
     if line.startswith(format_options.header_prefix) or line.startswith(format_options.comment_prefix):
         line = line.replace("{engine}", format_options.engine)
         # replace the comment character for other file types
-        line = line.replace(format_options.comment_prefix, format_options.comment_replacement, 1)
-        return line
+        line = line.replace(format_options.comment_prefix, format_options.comment_prefix_replacement, 1)
+        return [line]
 
     if line.rstrip() == "":
-        return line
+        return [line]
 
     if format_options.hosts_mode:
         # remove leading periods
@@ -167,7 +196,7 @@ def format_line(line: str, format_options: FormatOptions) -> str:
 
         if "/" in line:
             # afaik the hosts format doesn't allow individual pages? still return the line commented though
-            return "#       " + line
+            return ["#       " + line]
 
     if format_options.apply_prefix:
         if not line.startswith(format_options.line_prefix_to_apply):
@@ -179,8 +208,11 @@ def format_line(line: str, format_options: FormatOptions) -> str:
             line = line + format_options.line_suffix_to_apply
         line = line + "\n"
 
-    line_format = format_options.line_format.rstrip() + "\n" # Normalise the format line ending, add if not present
-    return line_format.replace("{url}", line.rstrip())
+    lines: list[str] = []
+    for format in format_options.line_formats: 
+        lines.append(format.replace("{url}", line.rstrip()))
+
+    return lines
 
 def get_files(folder: str) -> list[str]:
     files: list[str] = []
@@ -209,7 +241,7 @@ def get_files_sorted(input: str | list[str]) -> list[str]:
         files = get_files(input)
         return sorted(files, key=str.lower)
 
-    if isinstance(input, list[str]):
+    if isinstance(input, list):
         return sorted(input, key=str.lower)
 
 def write_formatted_lines_to_file(input_file_paths: list[str], output_file: TextIOWrapper, format_options: FormatOptions):
@@ -225,11 +257,11 @@ def write_formatted_lines_to_file(input_file_paths: list[str], output_file: Text
                     if (len(header_lines) == 0 and len(lines) == 0):
                         _ = output_file.write('\n')
                         break
-
-                    output_file.writelines([
-                        format_line(line, format_options)
-                        for line in header_lines + lines
-                    ])
+                    
+                    lines_to_write: list[str] = []
+                    for line in (header_lines + lines):
+                        lines_to_write.extend(format_line(line, format_options))
+                    output_file.writelines(lines_to_write)
 
                     _ = output_file.write("\n")
 
@@ -251,7 +283,7 @@ def try_write_to_path(path: str, input_file_paths: list[str], format_options: Fo
         print(f"Successfully wrote {path}")
         return True
 
-def compile_files(input_file_paths: list[str], output_file: str, output_header: str) -> bool:
+def compile_files(input_file_paths: list[str], output_file: str, output_header: str, remove_sources: bool = False) -> bool:
     if exists(output_file):
         if isdir(output_file):
             warnings.warn(f"Targeted path {output_file} is a directory, cancelling writing from {input_file_paths}")
@@ -272,6 +304,8 @@ def compile_files(input_file_paths: list[str], output_file: str, output_header: 
                         _ = f.write(line)
 
                     _ = f.write('\n')
+                if remove_sources:
+                    remove(path)
 
     print(f"Successfully compiled {output_file}")
     return True
@@ -295,19 +329,20 @@ def main():
     if opts.create_ublockorigin:
         # TODO: move this into the arguments
         ublock_formats = {
-            "google": 'google.com##a[href*="{url}"]:upward(2):remove()',
-            "duckduckgo": 'duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()',
-            "bing": 'bing.com##a[href*="{url}"]:upward(li):remove()',
+            "google": ['google.com##a[href*="{url}"]:upward(2):remove()'],
+            "duckduckgo": ['duckduckgo.com##a[href*="{url}"]:upward(figure):upward(2):remove()'],
+            "bing": ['bing.com##a[href*="{url}"]:upward(li):remove()'],
         }
 
-        format_options = FormatOptions("", "")
-        element_format = FormatOptions("{url}", "")
+        format_options = FormatOptions()
+        element_format = FormatOptions()
+        element_format.line_formats = ["{url}"]
 
         written_files = []
         written_files_nuclear = []
 
         for engine, line_format in ublock_formats.items():
-            format_options.line_format = line_format
+            format_options.line_formats = line_format
             format_options.engine = engine
 
             target_path = join(opts.output_path, format_options.engine + "-list_uBlockOrigin.txt")
@@ -324,13 +359,13 @@ def main():
                     for file in element_files:
                         with open(file, "rt", encoding="utf-8") as r:
                             for line in r:
-                                _ = f.write(format_line(line, element_format))
+                                _ = f.writelines(format_line(line, element_format))
 
                 written_files.append(target_path)
 
         if opts.create_nuclear_list:
             for engine, line_format in ublock_formats.items():
-                format_options.line_format = line_format
+                format_options.line_formats = line_format
                 format_options.engine = engine + " (Nuclear)"
 
                 target_path = join(opts.output_path, "Nuclear_" + engine + "-list_uBlockOrigin.txt")
@@ -351,15 +386,14 @@ def main():
 
     if opts.create_ublacklist:
         # TODO: move this into the arguments
-        ublacklist_format = FormatOptions(
-            line_format='*://*{url}*',
-            engine="uBlacklist",
-            comment_replacement="#",
-            apply_prefix=True,
-            line_prefix_to_apply=".",
-            apply_suffix=True,
-            line_suffix_to_apply="/"
-        )
+        ublacklist_format = FormatOptions()
+        ublacklist_format.line_formats = ['*://*{url}*']
+        ublacklist_format.engine = "uBlacklist"
+        ublacklist_format.comment_prefix_replacement = "#"
+        ublacklist_format.apply_prefix = True
+        ublacklist_format.line_prefix_to_apply = "."
+        ublacklist_format.apply_suffix = True
+        ublacklist_format.line_suffix_to_apply = "/"
 
         target_path = join(opts.output_path, "list_uBlacklist.txt")
 
@@ -375,36 +409,18 @@ def main():
             was_file_written = try_write_to_path(target_path, nuclear_files, ublacklist_format)
 
     if opts.create_hosts:
-        hosts_formats = [
-            FormatOptions(
-                line_format='0.0.0.0 {url}',
-                engine='hosts',
-                comment_replacement="#",
-                hosts_mode=True
-            ),
-            FormatOptions(
-                line_format='0.0.0.0 www{url}',
-                engine='hosts-www',
-                comment_replacement="#",
-                apply_prefix=True,
-                line_prefix_to_apply='.',
-                hosts_mode=True
-            )
-        ]
+        hosts_format = FormatOptions()
+        hosts_format.line_formats = ['0.0.0.0 {url}', '0.0.0.0 www.{url}']
+        hosts_format.engine='hosts'
+        hosts_format.comment_prefix_replacement="#"
+        hosts_format.hosts_mode=True
 
         written_files = []
 
-        for format_option in hosts_formats:
-            target_path = join(opts.output_path, format_option.engine + ".txt")
+        target_path = join(opts.output_path, hosts_format.engine + ".txt")
 
-            was_file_written = try_write_to_path(target_path, common_files, format_option)
-            if was_file_written:
-                written_files.append(target_path)
+        _ = try_write_to_path(target_path, common_files, hosts_format)
 
-            if opts.compile_hosts:
-                target_path = join(opts.output_path, "list_hosts.txt")
-                _ = compile_files(written_files, target_path, "# Title: Huge AI Blocklist (Compiled)\n")
-
-
+        
 if __name__ == '__main__':
     main()
