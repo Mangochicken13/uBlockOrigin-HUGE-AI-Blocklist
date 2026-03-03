@@ -45,6 +45,8 @@ class FormatOptions:
 
     :param bool hosts_mode: Removes leading whitespace and periods, comments out lines that contain `/`
     """
+    def __post_init__(self):
+        self.line_formats = self._line_formats
 
     _line_formats: list[str]
 
