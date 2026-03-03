@@ -31,10 +31,6 @@ class Options:
     clean_output_folder: bool = False
 
 
-
-# TODO: go check alyce discord for get opts() refactor tips
-
-
 @dataclass
 class FormatOptions:
     """
@@ -49,17 +45,8 @@ class FormatOptions:
 
     :param bool hosts_mode: Removes leading whitespace and periods, comments out lines that contain `/`
     """
-    def __init__(self) -> None:
-        self._line_formats: list[str] = ["{url}"]
-        self.engine = ""
-        self.header_prefix = "! //"
-        self.comment_prefix = "!"
-        self.comment_prefix_replacement = "!"
-        self.apply_prefix = False
-        self.line_prefix_to_apply = ""
-        self.apply_suffix = False
-        self.line_suffix_to_apply = ""
-        self.hosts_mode = False
+
+    _line_formats: list[str]
 
     # Guarding against formats being assigned without a newline character included
     @property
@@ -92,9 +79,7 @@ class FormatOptions:
     hosts_mode: bool = False
 
 def build_parser() -> arg.ArgumentParser:
-    parser = arg.ArgumentParser(
-            description="Site blocklist generator and formatter script"
-    )
+    parser = arg.ArgumentParser(description="Site blocklist generator and formatter script")
 
     formats = parser.add_argument_group(title="Formats")
     _ = formats.add_argument(
@@ -146,29 +131,29 @@ def build_parser() -> arg.ArgumentParser:
     folders = parser.add_argument_group("Folders")
     _ = folders.add_argument(
         "--list-path",
-        dest='list_path', default="Lists",
+        dest='list_folder', default="Lists",
         help='Parent folder where all list subfolders are located \nDefault = "Lists"')
     _ = folders.add_argument(
         "--common-path",
-        dest='common_path', default="Common",
+        dest='common_list_path', default="Common",
         help='Path for the folder containing the common lists \nDefault = "Common"')
     _ = folders.add_argument(
         "--subpage-path",
-        dest='subpage_path', default="SubPages",
+        dest='subpage_list_path', default="SubPages",
         help='Path for the folder containing the subpage lists \nDefault = "SubPages"')
     _ = folders.add_argument(
         "--nuclear-path",
-        dest='nuclear_path', default="Nuclear",
+        dest='nuclear_list_path', default="Nuclear",
         help='Path for the folder containing the nuclear option lists \nDefault = "Nuclear"')
     _ = folders.add_argument(
         "--element-path",
-        dest='element_path', default="Elements",
+        dest='element_list_path', default="Elements",
         help='Path for the folder containing additional elements added to the uBlockOrigin list \nDefault = "Elements"')
 
     # Nuclear
     _ = parser.add_argument(
         "-n", "--nuclear", 
-        action=arg.BooleanOptionalAction, dest='create_nuclear_list', default=True)
+        action=arg.BooleanOptionalAction, dest='create_nuclear_lists', default=True)
     # _ = parser.add_argument(
     #     "--no-nuclear",
     #     action='store_false', dest='create_nuclear_list',)
@@ -180,7 +165,7 @@ def build_parser() -> arg.ArgumentParser:
         help='The folder to write the compiled and formatted files to')
     _ = parser.add_argument(
         "--overwrite",
-        action=arg.BooleanOptionalAction, dest='overwrite', default=True,
+        action=arg.BooleanOptionalAction, dest='overwrite_files', default=True,
         help='Overwrite existing exported files (default)')
     # _ = parser.add_argument(
     #     "--no-overwrite",
@@ -188,116 +173,6 @@ def build_parser() -> arg.ArgumentParser:
     #     help="Don't allow ovewriting existing files in the export directory")
 
     return parser
-
-# def get_opts() -> tuple[opt.Values, list[str]]:
-#     parser = opt.OptionParser(
-#         description="Site blocklist generator script"
-#     )
-#
-#     ## Formats
-#     formats = opt.OptionGroup(parser, "Formats")
-#
-#     # Hosts
-#     _ = formats.add_option(
-#         "--hosts",
-#         action='store_true', dest='create_hosts', default=True,
-#         help='Enable hosts.txt file creation (default)')
-#     _ = formats.add_option(
-#         "--no-hosts",
-#         action='store_false', dest='create_hosts',
-#         help='Disable all hosts file creation. Includes --no-compile-hosts')
-#     # _ = formats.add_option(
-#     #     "--compile-hosts",
-#     #     action='store_true', dest='compile_hosts', default=True,
-#     #     help='Compile all hosts formats (default)')
-#     # _ = formats.add_option(
-#     #     "--no-compile-hosts",
-#     #     action='store_false', dest='compile_hosts',
-#     #     help="Don't compile the hosts.txt formats together")
-#
-#
-#     # uBlacklist
-#     _ = formats.add_option(
-#         "--ublacklist",
-#         action='store_true', dest='create_ublacklist', default=True,
-#         help='Create uBlacklist file format (default)')
-#     _ = formats.add_option(
-#         "--no-ublacklist", 
-#         action='store_false', dest='create_ublacklist',
-#         help="Don't create uBlacklist file format")
-#
-#
-#     # uBlockOrigin
-#     _ = formats.add_option(
-#         "--ublockorigin", "--ubo", "--ublock",
-#         action='store_true', dest='create_ublockorigin', default=True,
-#         help='Create uBlockOrigin file (default)')
-#     _ = formats.add_option(
-#         "--no-ublockorigin", "--no-ubo", "--no-ublock",
-#         action='store_false', dest='create_ublockorigin',
-#         help='Disable all uBlockOrigin file creation. Includes --no-compile-ublockorigin')
-#     _ = formats.add_option(
-#         "--compile-ublockorigin", "--compile-ubo", "--compile-ublock",
-#         action='store_true', dest='compile_ublockorigin', default=True,
-#         help='Compile all uBlockOrigin formats (default)')
-#     _ = formats.add_option(
-#         "--no-compile-ublockorigin", "--no-compile-ubo", "--no-compile-ublock",
-#         action='store_false', dest='compile_ublockorigin',
-#         help="Don't compile the uBlockOrigin formats together")
-#
-#     _ = parser.add_option_group(formats)
-#
-#
-#     ## Folders
-#     folders = opt.OptionGroup(parser, "Folders")
-#     _ = folders.add_option(
-#         "--list-path",
-#         dest='list_path', default="Lists",
-#         help='Parent folder where all list subfolders are located \nDefault = "Lists"')
-#     _ = folders.add_option(
-#         "--common-path",
-#         dest='common_path', default="Common",
-#         help='Path for the folder containing the common lists \nDefault = "Common"')
-#     _ = folders.add_option(
-#         "--subpage-path",
-#         dest='subpage_path', default="SubPages",
-#         help='Path for the folder containing the subpage lists \nDefault = "SubPages"')
-#     _ = folders.add_option(
-#         "--nuclear-path",
-#         dest='nuclear_path', default="Nuclear",
-#         help='Path for the folder containing the nuclear option lists \nDefault = "Nuclear"')
-#     _ = folders.add_option(
-#         "--element-path",
-#         dest='element_path', default="Elements",
-#         help='Path for the folder containing additional elements added to the uBlockOrigin list \nDefault = "Elements"')
-#
-#     _ = parser.add_option_group(folders)
-#
-#     # Nuclear
-#     _ = parser.add_option(
-#         "-n", "--nuclear", 
-#         action='store_true', dest='create_nuclear_list', default=True)
-#     _ = parser.add_option(
-#         "--no-nuclear",
-#         action='store_false', dest='create_nuclear_list',)
-#
-#     # Export
-#     _ = parser.add_option(
-#         "-o", "--output-folder",
-#         dest='output_path', default="Export",
-#         help='The folder to write the compiled and formatted files to')
-#     _ = parser.add_option(
-#         "--overwrite",
-#         action='store_true', dest='overwrite', default=True,
-#         help='Overwrite existing exported files (default)')
-#     _ = parser.add_option(
-#         "--no-overwrite",
-#         action='store_false', dest='overwrite',
-#         help="Don't allow ovewriting existing files in the export directory")
-#
-#     loaded_opts, loaded_args = parser.parse_args()
-#
-#     return loaded_opts, loaded_args
 
 def format_line(line: str, format_options: FormatOptions) -> list[str]:
     """
@@ -458,9 +333,8 @@ def main(config: Options):
             "bing": ['bing.com##a[href*="{url}"]:upward(li):remove()'],
         }
 
-        format_options = FormatOptions()
-        element_format = FormatOptions()
-        element_format.line_formats = ["{url}"]
+        format_options = FormatOptions([""])
+        element_format = FormatOptions(["{url}"])
 
         written_files = []
         written_files_nuclear = []
@@ -511,14 +385,15 @@ def main(config: Options):
 
     if config.create_ublacklist:
         # TODO: move this into the arguments
-        ublacklist_format = FormatOptions()
-        ublacklist_format.line_formats = ['*://*{url}*']
-        ublacklist_format.engine = "uBlacklist"
-        ublacklist_format.comment_prefix_replacement = "#"
-        ublacklist_format.apply_prefix = True
-        ublacklist_format.line_prefix_to_apply = "."
-        ublacklist_format.apply_suffix = True
-        ublacklist_format.line_suffix_to_apply = "/"
+        ublacklist_format = FormatOptions(
+            ['*://*{url}*'],
+            engine="uBlacklist",
+            comment_prefix_replacement="#",
+            apply_prefix=True,
+            line_prefix_to_apply = ".",
+            apply_suffix=True,
+            line_suffix_to_apply="/"
+        )
 
         target_path = join(config.output_path, "list_uBlacklist.txt")
 
@@ -535,13 +410,12 @@ def main(config: Options):
             was_file_written = try_write_to_path(target_path, nuclear_files, ublacklist_format, config.overwrite_files)
 
     if config.create_hosts:
-        hosts_format = FormatOptions()
-        hosts_format.line_formats = ['0.0.0.0 {url}', '0.0.0.0 www.{url}']
-        hosts_format.engine='hosts'
-        hosts_format.comment_prefix_replacement="#"
-        hosts_format.hosts_mode=True
-
-        written_files = []
+        hosts_format = FormatOptions(
+            ['0.0.0.0 {url}', '0.0.0.0 www.{url}'],
+            engine='hosts',
+            comment_prefix_replacement="#",
+            hosts_mode=True
+        )
 
         target_path = join(config.output_path, hosts_format.engine + ".txt")
 
