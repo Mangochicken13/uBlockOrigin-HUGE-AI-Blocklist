@@ -334,8 +334,8 @@ def main(config: Options):
             "google": ['google.com##a[href*="{url}"]:upward(2):remove()'],
             "duckduckgo": ['duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()'],
             "bing": ['bing.com##a[href*="{url}"]:upward(li):remove()'],
-            "startpage": ['startpage.com##.image-container span:has-text({url}):upward(.image-container)', # Images tab
-                          'startpage.com##.result a[href*="{url}"]:upward(.result)']
+            "startpage": ['startpage.com##.image-container span:has-text({url}):upward(.image-container):remove()', # Images tab
+                          'startpage.com##.result a[href*="{url}"]:upward(.result):remove()']
         }
 
         format_options = FormatOptions([""])
