@@ -664,7 +664,7 @@ duckduckgo.com##a[href*="starryai.com"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="steelefortress.com"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="stlmax.com"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="stockcake.com"]:upward(figure):upward(1):remove()
-duckduckgo.com##a[href*="story.com"]:upward(figure):upward(1):remove()
+duckduckgo.com##a[href*=".story.com"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="suno.com"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="superprompts.com"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="swag-ai.com"]:upward(figure):upward(1):remove()
@@ -1767,6 +1767,7 @@ duckduckgo.com##a[href*="x.com/watanaharumi/"]:upward(figure):upward(1):remove()
 
 ! // Youtube AI "artists"/orgs
 ! Try to sort this list manually, because youtube has a channel/generated_id and @channel_name syntax
+! You can find the generated id for a channel by opening the dev console and searching for 'meta property="og:url"' in the html search bar
 duckduckgo.com##a[href*="youtube.com/@shadiversity"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="youtube.com/channel/UCkmMACUKpQeIxN9D9ARli1Q"]:upward(figure):upward(1):remove()
 duckduckgo.com##a[href*="youtube.com/@SHAD_AI"]:upward(figure):upward(1):remove()
