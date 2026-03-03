@@ -621,7 +621,7 @@ starryai.com
 steelefortress.com
 stlmax.com
 stockcake.com
-story.com
+.story.com
 suno.com
 superprompts.com
 swag-ai.com
