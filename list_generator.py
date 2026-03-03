@@ -327,10 +327,13 @@ def main(config: Options):
 
     if config.create_ublockorigin:
         # TODO: move this into the arguments
+        # TODO: optimise the rules for better selection; 
         ublock_formats = {
             "google": ['google.com##a[href*="{url}"]:upward(2):remove()'],
             "duckduckgo": ['duckduckgo.com##a[href*="{url}"]:upward(figure):upward(1):remove()'],
             "bing": ['bing.com##a[href*="{url}"]:upward(li):remove()'],
+            "startpage": ['startpage.com##.image-container span:has-text({url}):upward(.image-container)', # Images tab
+                          'startpage.com##.result a[href*="{url}"]:upward(.result)']
         }
 
         format_options = FormatOptions([""])
