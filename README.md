@@ -1,3 +1,7 @@
+> [!NOTE]
+> Development on this fork has moved to [Codeberg](https://codeberg.org/Mangochicken/uBlockOrigin-HUGE-AI-Blocklist), and will be further moved into [just_a_husk's fork](https://codeberg.org/just_a_husk/uBlockOrigin-AI-Blocklist)  
+> This repository is now archived, either work off of the base repo, or one of the codeberg forks if you want to help with this project
+
 # uBlockOrigin & uBlacklist Huge AI Blocklist
 A huge blocklist of manually curated sites (1000+) that contain AI generated content, for the purposes of cleaning image search engines (Google Search, DuckDuckGo, and Bing) with uBlock Origin or uBlacklist. 
 
